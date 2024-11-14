@@ -7,9 +7,9 @@ public class OrderStatusUpdateMessage {
     private UUID orderId;
     private String status;
 
-    private LocalDateTime date;
+    private String date;
 
-    public OrderStatusUpdateMessage(UUID orderId, String status, LocalDateTime date) {
+    public OrderStatusUpdateMessage(UUID orderId, String status, String date) {
         this.orderId = orderId;
         this.status = status;
         this.date = date;
@@ -27,11 +27,11 @@ public class OrderStatusUpdateMessage {
         return status;
     }
 
-    public LocalDateTime getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

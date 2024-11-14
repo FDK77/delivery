@@ -63,6 +63,11 @@ public class OrderController {
         return ResponseEntity.ok(resource);
     }
 
+    @PutMapping("/discount/{id}/{discount}")
+    public void makeDiscount(@PathVariable UUID id, @PathVariable double discount) {
+        orderService.makeDiscount(id,discount);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
         Order order = orderService.getOrderById(id);

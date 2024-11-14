@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -71,6 +72,20 @@ public class OrderServiceImpl implements IOrderService {
             return order;
         }).orElse(null);
     }
+
+    @Override
+    public void makeDiscount(UUID id, double discount) {
+        orderRepository.findById(id).ifPresentOrElse(order -> {
+            double oldPrice = order.getOrderCost();
+            double newPrice = oldPrice - (oldPrice * discount);
+            order.setOrderCost(newPrice);
+            orderRepository.save(order);
+            System.out.println("Стоимость заказа с ID: " + id + " поменялась с " + oldPrice + " на " + newPrice + ".");
+        }, () -> {
+            System.out.println("Заказ с ID: " + id + " не найден.");
+        });
+    }
+
 
     @Override
     public boolean deleteOrder(UUID id) {

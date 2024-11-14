@@ -13,5 +13,7 @@ public interface IOrderService {
     Order createOrder(Order order);
 
     Order updateOrder(UUID id, Order updatedOrder);
+
+    void makeDiscount(UUID id, double discount);
     boolean deleteOrder(UUID id);
 }

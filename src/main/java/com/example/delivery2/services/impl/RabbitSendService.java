@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.delivery2.dto.OrderStatusUpdateMessage;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,6 +23,7 @@ public class RabbitSendService {
     private final RabbitTemplate rabbitTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
     static final String exchangeName = "testExchange";
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Autowired
     public RabbitSendService(RabbitTemplate rabbitTemplate) {
@@ -29,20 +31,13 @@ public class RabbitSendService {
     }
 
     public void sendOrderStatusUpdate(UUID orderId, String currentStatus) {
-        OrderStatusUpdateMessage message = new OrderStatusUpdateMessage(orderId, currentStatus, LocalDateTime.now());
-        rabbitTemplate.convertAndSend(exchangeName, "my.key", message);
+        String formattedDate = LocalDateTime.now().format(dateTimeFormatter);
+        OrderStatusUpdateMessage message = new OrderStatusUpdateMessage(orderId, currentStatus, formattedDate);
+        rabbitTemplate.convertAndSend(exchangeName, "my.key", message);  // Автоматическая сериализация в JSON
     }
-
 
     public void sendOrderCreate(UUID orderId, String currentStatus) {
-        OrderStatusUpdateMessage message = new OrderStatusUpdateMessage(orderId, currentStatus, LocalDateTime.now());
-        try {
-            String jsonMessage = objectMapper.writeValueAsString(message);
-            rabbitTemplate.convertAndSend(exchangeName, "my.key", jsonMessage);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        sendOrderStatusUpdate(orderId, currentStatus);
     }
-
 }
 
