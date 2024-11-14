@@ -1,5 +1,6 @@
 package com.example.delivery2.services.impl;
 
+import com.example.delivery2.dto.ResponseDto;
 import com.example.delivery2.models.Order;
 import com.example.delivery2.models.Status;
 import com.example.delivery2.repositories.OrderRepository;
@@ -74,17 +75,23 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public void makeDiscount(UUID id, double discount) {
-        orderRepository.findById(id).ifPresentOrElse(order -> {
+    public ResponseDto makeDiscount(UUID id, double discount) {
+        ResponseDto response = null;
+        Optional<Order> optionalOrder = orderRepository.findById(id);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
             double oldPrice = order.getOrderCost();
             double newPrice = oldPrice - (oldPrice * discount);
             order.setOrderCost(newPrice);
             orderRepository.save(order);
             System.out.println("Стоимость заказа с ID: " + id + " поменялась с " + oldPrice + " на " + newPrice + ".");
-        }, () -> {
+            response = new ResponseDto(id, oldPrice, newPrice);
+        } else {
             System.out.println("Заказ с ID: " + id + " не найден.");
-        });
+        }
+        return response;
     }
+
 
 
     @Override

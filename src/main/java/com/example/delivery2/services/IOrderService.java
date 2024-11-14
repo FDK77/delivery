@@ -1,5 +1,6 @@
 package com.example.delivery2.services;
 
+import com.example.delivery2.dto.ResponseDto;
 import com.example.delivery2.models.Order;
 
 import java.util.List;
@@ -14,6 +15,6 @@ public interface IOrderService {
 
     Order updateOrder(UUID id, Order updatedOrder);
 
-    void makeDiscount(UUID id, double discount);
+    ResponseDto makeDiscount(UUID id, double discount);
     boolean deleteOrder(UUID id);
 }

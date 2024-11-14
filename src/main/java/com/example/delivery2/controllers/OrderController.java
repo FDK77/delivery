@@ -1,5 +1,6 @@
 package com.example.delivery2.controllers;
 
+import com.example.delivery2.dto.ResponseDto;
 import com.example.delivery2.models.Order;
 import com.example.delivery2.services.impl.OrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +65,14 @@ public class OrderController {
     }
 
     @PutMapping("/discount/{id}/{discount}")
-    public void makeDiscount(@PathVariable UUID id, @PathVariable double discount) {
-        orderService.makeDiscount(id,discount);
+    public ResponseEntity<ResponseDto> makeDiscount(@PathVariable UUID id, @PathVariable double discount) {
+        ResponseDto response = orderService.makeDiscount(id, discount);
+        if (response == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
